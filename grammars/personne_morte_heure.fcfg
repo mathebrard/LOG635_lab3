@@ -11,6 +11,7 @@ Nprop[SEM=<Peacock>] -> 'Peacock'
 Nprop[SEM=<Scarlet>] -> 'Scarlet'
 Nprop[SEM=<Plum>] -> 'Plum'
 Nprop[SEM=<White>] -> 'White'
+Nprop[SEM=<Green>] -> 'Green'
 
 Nh[SEM=<1>] -> '1h' | '1h00'
 Nh[SEM=<2>] -> '2h' | '2h00'

@@ -4,9 +4,9 @@ from aima.logic import *
 class CrimeInference:
 
     def __init__(self):
-        self.weapons = ["Corde", "Fusil", "Couteau"]
-        self.rooms = ["Cuisine", "Bureau", "Garage", "Salon"]
-        self.persons = ["Mustard", "Peacock", "Scarlet", "Plum", "White"]
+        self.weapons = ["Couteau","Revolver","Corde","Tuyau","Matraque"]
+        self.rooms = ["Salon","Cuisine","Bureau","Studio","Bibliothèque","Cave"]
+        self.persons = ["Mustard", "Peacock", "Scarlet", "Plum", "White","Green"]
         
         # Liste de clauses (faits) qui seront stockées dans la base de connaissance.
         self.clauses = []        
