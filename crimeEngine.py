@@ -4,7 +4,7 @@ from aima.logic import *
 class CrimeInference:
 
     def __init__(self):
-        self.weapons = ["Couteau","Revolver","Corde","Tuyau","Matraque"]
+        self.weapons = ["Couteau","Revolver","Corde","Tuyau","Matraque","Chandelier"]
         self.rooms = ["Salon","Cuisine","Bureau","Studio","Bibliothèque","Cave"]
         self.persons = ["Mustard", "Peacock", "Scarlet", "Plum", "White","Green"]
         
@@ -103,7 +103,7 @@ class CrimeInference:
         self.clauses.append(expr('EstMort(x) & Personne_Piece(x, y) ==> PieceCrime(y)'))
 
         # Determiner l'arme du crime
-        self.clauses.append(expr('PieceCrime(x) & Arme(y) & Piece_Arme(y, x) ==> ArmeCrime(y)'))
+        self.clauses.append(expr('PieceCrime(x) & Arme(y) & Arme_Piece(y, x) ==> ArmeCrime(y)'))
         self.clauses.append(expr("EstMort(x) & MarqueCou(x) ==> ArmeCrime(Corde)"))
 
         # Si la personne est morte alors elle est la victime et ce n'est pas un suicide
