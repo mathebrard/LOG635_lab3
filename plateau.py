@@ -65,29 +65,50 @@ def define_markers(self):
             )
         )
 
+## Definit toutes les actions a faire en fonction du marker vu ##
 def action_manager(self, object_type):
     print(object_type.name)
     if (object_type.name == 'CustomType06'):
         print("J'ai trouvé le couteau")
         self.say_text("Couteau", in_parallel=True).wait_for_completed()
         time.sleep(2)
-    if (object_type.name == 'CustomType14'):
-        print("J'ai trouvé le marteau")
-        self.say_text("Marteau", in_parallel=True).wait_for_completed()
+    if (object_type.name == 'CustomType01'):
+        print("J'ai trouvé le revlover")
+        self.say_text("Revolver", in_parallel=True).wait_for_completed()
         time.sleep(2)
-    #TODO: c'est dans cette fonction que ca plante
+    if (object_type.name == 'CustomType02'):
+        print("J'ai trouvé le corde")
+        self.say_text("Corde", in_parallel=True).wait_for_completed()
+        time.sleep(2)
+    if (object_type.name == 'CustomType03'):
+        print("J'ai trouvé le tuyau")
+        self.say_text("Tuyau", in_parallel=True).wait_for_completed()
+        time.sleep(2)
+    if (object_type.name == 'CustomType04'):
+        print("J'ai trouvé le matraque")
+        self.say_text("Matraque", in_parallel=True).wait_for_completed()
+        time.sleep(2)
+    if (object_type.name == 'CustomType05'):
+        print("J'ai trouvé le chandelier")
+        self.say_text("Chandelier", in_parallel=True).wait_for_completed()
+        time.sleep(2)
+    if (object_type.name == 'CustomType11'):
+        print("J'ai trouvé Mustard")
+        self.say_text("Mustard", in_parallel=True).wait_for_completed()
+        time.sleep(2)
+    if (object_type.name == 'CustomType12'):
+        print("J'ai trouvé Peacock")
+        self.say_text("Peacock", in_parallel=True).wait_for_completed()
+        time.sleep(2)
+    if (object_type.name == 'CustomType13'):
+        print("J'ai trouvé le Scarlet")
+        self.say_text("Scarlet", in_parallel=True).wait_for_completed()
+        time.sleep(2)
+    if (object_type.name == 'CustomType14'):
+        print("J'ai trouvé le Plum")
+        self.say_text("Plum", in_parallel=True).wait_for_completed()
+        time.sleep(2)
     
-    
-    # if (object_type == self.markers['Triangles3']):
-    #     self.robot.say_text("Hi!").wait_for_completed()
-    # if (object_type == self.markers['Triangles4']):
-    #     self.robot.say_text(
-    #         "I will now stack those cubes.").wait_for_completed()
-    #     stack_cubes(self.robot)
-    # if (object_type == self.markers['Triangles5']):
-    #     self.robot.say_text("Wow!").wait_for_completed()
-    # if (object_type == self.markers['Circles2']):
-    #     self.robot.turn_in_place(degrees(360)).wait_for_completed()
 
 def cozmo_program(robot: cozmo.robot.Robot):
     robot.world.delete_all_custom_objects()  
@@ -97,21 +118,22 @@ def cozmo_program(robot: cozmo.robot.Robot):
     robot.look_around = None
     robot.initial_pose = None
     robot.markers = {
-            'Triangles2': 'CustomType06', #Triangles2
-            'Triangles3': 'CustomType01', #Triangles3
-            'Triangles4': 'CustomType02', #Triangles4
-            'Triangles5': 'CustomType03', #Triangles5
-            'Circles2': 'CustomType04', #Circles2
-            'Circles3': 'CustomType05', #Circles3
-            'Hexagons2': 'CustomType11', #Hexagons2
-            'Hexagons3': 'CustomType12', #Hexagons3
-            'Hexagons4': 'CustomType13', #Hexagons4
-            'Hexagons5': 'CustomType14' #Hexagons5
+            'Triangles2': 'CustomType06', #Triangles2 Couteau
+            'Triangles3': 'CustomType01', #Triangles3 Revolver
+            'Triangles4': 'CustomType02', #Triangles4 Corde
+            'Triangles5': 'CustomType03', #Triangles5 Tuyau
+            'Circles2': 'CustomType04', #Circles2 Matraque
+            'Circles3': 'CustomType05', #Circles3 Chandelier
+            'Hexagons2': 'CustomType11', #Hexagons2 Mustard
+            'Hexagons3': 'CustomType12', #Hexagons3 Peacock
+            'Hexagons4': 'CustomType13', #Hexagons4 Scarlet
+            'Hexagons5': 'CustomType14' #Hexagons5 Plum
         }
     robot.initial_pose = Pose(0, 0, 0, angle_z=degrees(45))
+    robot.create_walls()
     define_markers(robot)
      
-    while len(robot.markersFound) != 2:
+    while len(robot.markersFound) != 3:
         time.sleep(0.1)
         
         robot.look_around = robot.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
