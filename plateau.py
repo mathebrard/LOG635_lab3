@@ -36,8 +36,8 @@ def create_walls(robot: cozmo.robot.Robot):
     wallH = Pose(450, 1000, 30,  angle_z=degrees(0))     
     wallH = robot.world.create_custom_fixed_object(wallH,  WALL_WIDTH, 240 , WALL_HEIGHT , relative_to_robot=False)
     
-    wallL = Pose(450, 70, 30,  angle_z=degrees(0))     
-    wallL = robot.world.create_custom_fixed_object(wallL,  WALL_WIDTH, 240 , WALL_HEIGHT , relative_to_robot=False)
+    # wallL = Pose(450, 70, 30,  angle_z=degrees(0))     
+    # wallL = robot.world.create_custom_fixed_object(wallL,  WALL_WIDTH, 240 , WALL_HEIGHT , relative_to_robot=False)
     
     # --- DU HAUT ---
     wallI = Pose(800, 300, 30,  angle_z=degrees(0))     
@@ -130,23 +130,43 @@ def cozmo_program(robot: cozmo.robot.Robot):
             'Hexagons5': 'CustomType14' #Hexagons5 Plum
         }
     robot.initial_pose = Pose(0, 0, 0, angle_z=degrees(45))
-    robot.create_walls()
+    create_walls(robot)
     define_markers(robot)
+    
+    salon = Pose(700, 450, 30, angle_z=degrees(0))   
+    robot.go_to_pose(salon).wait_for_completed() 
      
-    while len(robot.markersFound) != 3:
-        time.sleep(0.1)
+    cuisine = Pose(700, 750, 30, angle_z=degrees(0))   
+    robot.go_to_pose(cuisine).wait_for_completed()
+    
+    bureau = Pose(700, 1000, 30, angle_z=degrees(0))   
+    robot.go_to_pose(bureau).wait_for_completed()
+    
+    studio = Pose(200, 1000, 30, angle_z=degrees(0))   
+    robot.go_to_pose(studio).wait_for_completed()  
+    
+    bibliotheque = Pose(200, 1000, 30, angle_z=degrees(0))   
+    robot.go_to_pose(bibliotheque).wait_for_completed()  
+    
+    cave = Pose(200, 1000, 30, angle_z=degrees(0))   
+    robot.go_to_pose(cave).wait_for_completed()    
+    # time.sleep(10)
+    
+    
+    # while len(robot.markersFound) != 3:
+    #     time.sleep(0.1)
         
-        robot.look_around = robot.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
+    #     robot.look_around = robot.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
         
-        markers = robot.world.wait_until_observe_num_objects(num=1, object_type=CustomObject, timeout=60)
-        if markers[0] in robot.markersFound:
-            print("Continue")
-            continue
-        else:
-            robot.markersFound.append(markers[0])
-            action_manager(robot, markers[0].object_type)
+    #     markers = robot.world.wait_until_observe_num_objects(num=1, object_type=CustomObject, timeout=60)
+    #     if markers[0] in robot.markersFound:
+    #         print("Continue")
+    #         continue
+    #     else:
+    #         robot.markersFound.append(markers[0])
+    #         action_manager(robot, markers[0].object_type)
             
-        robot.look_around.stop()
+    #     robot.look_around.stop()
         
         
 cozmo.run_program(cozmo_program, use_3d_viewer=True, use_viewer=True)
