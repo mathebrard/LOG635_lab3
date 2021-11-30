@@ -38,24 +38,38 @@ class Manager:
         
         if structure == 0:
             print("This is structure 0")
-            sentence = "Où est "+ self.itemsOfInterest[randint(0,5)]+"?"
+            sentence = "Où est "+ self.itemsOfInterest[randint(0,len(self.itemsOfInterest)-1)]+"?"
             question = 'grammars/arme_piece.fcfg'
             if self.checkSentence(sentence):
                 self.writeAnswer(sentence,question)
 
         elif structure == 1:
             print("This is structure 1")
-            sentence = "Où était "+ self.peopleOfInterest[randint(0,5)]+" à "+str(self.crimeTime)+"h?"
+            sentence = "Où était "+ self.peopleOfInterest[randint(0,len(self.peopleOfInterest)-1)]+" à "+str(self.crimeTime)+"h?"
             question = 'grammars/personne_piece_heure.fcfg'
             if self.checkSentence(sentence):
                 self.writeAnswer(sentence,question)
 
         elif structure == 2:
             print("This is sctucture 2")
-            itemsOfInterest=self.itemsOfInterest+self.peopleOfInterest
-            sentence = "Est-ce que "+itemsOfInterest[randint(0,11)]+" était dans "+self.rooms[randint(0,5)]+" à "+str(self.crimeTime)+"h?"
-            if self.checkSentence(sentence):
-                self.writeAnswer(sentence)
+            structure = randrange(2)
+            if structure == 0:
+                itemOfInterest = self.itemsOfInterest[randint(0,len(self.itemsOfInterest)-1)]
+                roomOfInterest = self.rooms[randint(0,len(self.rooms)-1)]
+                sentence = "Est-ce que "+itemOfInterest+" est dans "+roomOfInterest+"?"
+                answer = [itemOfInterest + " est dans " + roomOfInterest]
+                question = 'grammars/arme_piece.fcfg'
+                if self.checkSentence(sentence):
+                    self.writeYesNoAnswer(sentence,answer,question)
+
+            elif structure == 1:
+                itemOfInterest = self.peopleOfInterest[randint(0,len(self.peopleOfInterest)-1)]
+                roomOfInterest = self.rooms[randint(0,len(self.rooms)-1)]
+                sentence = "Est-ce que "+itemOfInterest+" est dans "+roomOfInterest+"?"
+                answer = [itemOfInterest + " était dans " + roomOfInterest + " à "+str(self.crimeTime)+" h"]
+                question = 'grammars/personne_piece_heure.fcfg'
+                if self.checkSentence(sentence):
+                    self.writeYesNoAnswer(sentence,answer,question)
 
     def checkSentence(self,sentence):
         for item in self.usedSentences:
@@ -76,7 +90,24 @@ class Manager:
                 self.writeAnswer(sentence,structure)
             answer = [lines[0]]
             self.to_fol(answer, structure)
-
+    
+    def writeYesNoAnswer(self,sentence, answer, structure):
+        print(sentence)
+        input("Press any key to read answer.txt")
+        with codecs.open('answer.txt','r','utf8') as f:
+            lines = f.readlines()
+            if len(lines) > 1 or lines[0].endswith("\n"):
+                print("s'il vous plait écrire seulement sur une ligne")
+                self.writeYesNoAnswer(sentence,answer,structure)
+            sheetAnswer = [lines[0]]
+            print(sheetAnswer)
+            if (sheetAnswer[0] == "Oui" or sheetAnswer[0] == "oui"):
+                self.to_fol(answer, structure)
+            elif (sheetAnswer[0] == "Non" or sheetAnswer[0] == "non"):
+                print("The statement is false") 
+            else:
+                print("s'il vous plait écrire seulement oui ou non")
+                self.writeYesNoAnswer(sentence,answer,structure)  
 
 
 
