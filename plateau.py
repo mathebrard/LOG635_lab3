@@ -3,6 +3,8 @@ from cozmo import robot
 from cozmo.util import degrees, Pose 
 from cozmo.objects import CustomObject, CustomObjectMarkers, CustomObjectTypes
 import time
+from manager import Manager
+
 WALL_HEIGHT = 60 
 WALL_WIDTH = 10 
 
@@ -119,6 +121,29 @@ def action_manager(self, object_type):
         time.sleep(2)
     
     
+def equalStringMarker(object_type):
+    if (object_type.name == 'CustomType06'):
+        return "le couteau"
+    if (object_type.name == 'CustomType01'):
+        return "le revolver"
+    if (object_type.name == 'CustomType02'):
+        return "la corde"
+    if (object_type.name == 'CustomType03'):
+        return "le tuyau"
+    if (object_type.name == 'CustomType04'):
+        return "le matraque"
+    if (object_type.name == 'CustomType05'):
+        return "le chandelier"
+    if (object_type.name == 'CustomType11'):
+        return "Mustard"
+    if (object_type.name == 'CustomType12'):
+        return "Peacock"
+    if (object_type.name == 'CustomType13'):
+        return "Scarlet"
+    if (object_type.name == 'CustomType14'):
+        return "Plum"
+
+    
 def checkMarkers(robot: cozmo.robot.Robot):
     time.sleep(0.1)
     robot.look_around = robot.start_behavior(cozmo.behavior.BehaviorTypes.LookAroundInPlace)
@@ -126,32 +151,32 @@ def checkMarkers(robot: cozmo.robot.Robot):
     markers = robot.world.wait_until_observe_num_objects(num=1, object_type=CustomObject, timeout=60)
     if markers[0] in robot.markersFound:
         print("Continue")
-        # continue
     else:
         robot.markersFound.append(markers[0])
         action_manager(robot, markers[0].object_type)
         
     robot.look_around.stop()
     
-    
-def action_manager_cube(self, cube):
+
+def equalStringCube(cube):
     if cube.cube_id == 1:
-        self.say_text("cube 1", in_parallel=True).wait_for_completed()
+        return "Green"
     if cube.cube_id == 2:
-        self.say_text("cube 2", in_parallel=True).wait_for_completed()
+        return "White"
+
  
  
 def checkCubes(robot: cozmo.robot.Robot):
     lookaround = robot.start_behavior(
         cozmo.behavior.BehaviorTypes.LookAroundInPlace)
     cubes = robot.world.wait_until_observe_num_objects(num=1, object_type=cozmo.objects.LightCube, timeout=60)
-    action_manager_cube(robot, cubes[0])
-    lookaround.stop()    
+    tmp = equalStringCube(cubes[0])
+    lookaround.stop()
+    return tmp    
 
 
 def cozmo_program(robot: cozmo.robot.Robot):
     robot.world.delete_all_custom_objects()  
-    
     robot.markersFound = []
     robot.custom_objects = []
     robot.look_around = None
@@ -168,33 +193,46 @@ def cozmo_program(robot: cozmo.robot.Robot):
             'Diamonds3': 'CustomType13', #Hexagons4 Scarlet
             'Diamonds5': 'CustomType14' #Hexagons5 Plum
         }
+    manager = Manager(3)
+    
     robot.initial_pose = Pose(0, 0, 0, angle_z=degrees(45))
     create_walls(robot)
     define_markers(robot)
     
     salon = Pose(700, 450, 30, angle_z=degrees(0))   
     robot.go_to_pose(salon).wait_for_completed() 
-    checkCubes(robot)
+    tmp = checkCubes(robot)
+    manager.receiveData(tmp, "le salon")
      
     cuisine = Pose(700, 750, 30, angle_z=degrees(0))   
     robot.go_to_pose(cuisine).wait_for_completed()
     checkMarkers(robot)
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    manager.receiveData(tmp, "la cuisine")
     
     bureau = Pose(700, 1000, 30, angle_z=degrees(0))   
     robot.go_to_pose(bureau).wait_for_completed()
     checkMarkers(robot)
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    manager.receiveData(tmp, "le bureau")
     
     studio = Pose(200, 1000, 30, angle_z=degrees(180))   
     robot.go_to_pose(studio).wait_for_completed()  
     checkMarkers(robot)
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    manager.receiveData(tmp, "le studio")
     
     bibliotheque = Pose(200, 750, 30, angle_z=degrees(180))   
     robot.go_to_pose(bibliotheque).wait_for_completed()  
     checkMarkers(robot)
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    manager.receiveData(tmp, "la biliothèque")
     
     cave = Pose(200, 420, 30, angle_z=degrees(180))   
     robot.go_to_pose(cave).wait_for_completed()    
     checkMarkers(robot)
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    manager.receiveData(tmp, "la cave")
     
     robot.say_text("fini").wait_for_completed()
     # for x in robot.markersFound:
