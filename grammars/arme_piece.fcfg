@@ -15,7 +15,7 @@ Npiece[SEM=<Salon>] -> 'salon'
 Npiece[SEM=<Bureau>] -> 'bureau'
 Npiece[SEM=<Bibliothèque>] -> 'bibliothèque'
 Npiece[SEM=<Studio>] -> 'studio'
-Narme[SEM=<Cave>] -> 'cave'
+Npiece[SEM=<Cave>] -> 'cave'
 
 Narme[SEM=<Revolver>] -> 'revolver'
 Narme[SEM=<Corde>] -> 'corde'
