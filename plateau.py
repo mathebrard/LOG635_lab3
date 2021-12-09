@@ -133,7 +133,7 @@ def equalStringMarker(object_type):
     if (object_type == 'CustomType03'):
         return "le tuyau"
     if (object_type == 'CustomType04'):
-        return "le matraque"
+        return "la matraque"
     if (object_type == 'CustomType05'):
         return "le chandelier"
     if (object_type == 'CustomType11'):
@@ -177,7 +177,7 @@ def checkCubes(manager: Manager, robot: cozmo.robot.Robot):
     if(tmp == "White"):
         robot.roll_cube(cubes[0]).wait_for_completed()
         #envoi l'info de qui est la victime
-        manager.addVictim(tmp)
+        # manager.addVictim(tmp)
     if(tmp == "Green"): #gerer ici en fonction de si on a trouvé le tueur
         robot.start_behavior(cozmo.behavior.BehaviorTypes.KnockOverCubes)
     return tmp    
@@ -201,18 +201,22 @@ def cozmo_program(robot: cozmo.robot.Robot):
             'Diamonds3': 'CustomType13', #Hexagons4 Scarlet
             'Diamonds5': 'CustomType14' #Hexagons5 Plum
         }
-    manager = Manager(3)
+    manager = Manager()
     
     
     hall = Pose(0, 0, 0, angle_z=degrees(45))
     robot.initial_pose = hall
     create_walls(robot)
     define_markers(robot)
+    print("ici")
     
     salon = Pose(700, 450, 30, angle_z=degrees(0))   
     robot.go_to_pose(salon).wait_for_completed() 
-    tmp = checkCubes(robot)
+    print("ici2")
+    tmp = checkCubes(manager, robot)
+    print("ici3")
     manager.receiveData(tmp, "le salon")
+    print("ici4")
      
     cuisine = Pose(700, 750, 30, angle_z=degrees(0))   
     robot.go_to_pose(cuisine).wait_for_completed()
@@ -236,7 +240,7 @@ def cozmo_program(robot: cozmo.robot.Robot):
     robot.go_to_pose(bibliotheque).wait_for_completed()  
     checkMarkers(robot)
     tmp = equalStringMarker(robot.markersFound[len(robot.markersFound) - 1])
-    manager.receiveData(tmp, "la biliothèque")
+    manager.receiveData(tmp, "la bibliothèque")
     
     cave = Pose(200, 420, 30, angle_z=degrees(180))   
     robot.go_to_pose(cave).wait_for_completed()    
@@ -245,12 +249,12 @@ def cozmo_program(robot: cozmo.robot.Robot):
     manager.receiveData(tmp, "la cave")
     
     #définit qui est le tueur et les circonstances
-    killer = manager.solve() 
+    # killer = manager.solve() 
     
     #retourne dans la pièce du début pour dire le résultat de ce qu'il a trouvé
     robot.go_to_pose(hall).wait_for_completed()  
     #dit le résultat qu'il a trouvé
-    robot.say_text(killer)  
+    # robot.say_text(killer)  
     
     
     robot.say_text("fini").wait_for_completed()
