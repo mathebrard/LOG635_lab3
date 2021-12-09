@@ -3,7 +3,9 @@ from cozmo import robot
 from cozmo.util import degrees, Pose 
 from cozmo.objects import CustomObject, CustomObjectMarkers, CustomObjectTypes
 import time
+
 from manager import Manager
+# from manager import Manager
 
 WALL_HEIGHT = 60 
 WALL_WIDTH = 10 
@@ -122,25 +124,25 @@ def action_manager(self, object_type):
     
     
 def equalStringMarker(object_type):
-    if (object_type.name == 'CustomType06'):
+    if (object_type == 'CustomType06'):
         return "le couteau"
-    if (object_type.name == 'CustomType01'):
+    if (object_type == 'CustomType01'):
         return "le revolver"
-    if (object_type.name == 'CustomType02'):
+    if (object_type == 'CustomType02'):
         return "la corde"
-    if (object_type.name == 'CustomType03'):
+    if (object_type == 'CustomType03'):
         return "le tuyau"
-    if (object_type.name == 'CustomType04'):
+    if (object_type == 'CustomType04'):
         return "le matraque"
-    if (object_type.name == 'CustomType05'):
+    if (object_type == 'CustomType05'):
         return "le chandelier"
-    if (object_type.name == 'CustomType11'):
+    if (object_type == 'CustomType11'):
         return "Mustard"
-    if (object_type.name == 'CustomType12'):
+    if (object_type == 'CustomType12'):
         return "Peacock"
-    if (object_type.name == 'CustomType13'):
+    if (object_type == 'CustomType13'):
         return "Scarlet"
-    if (object_type.name == 'CustomType14'):
+    if (object_type == 'CustomType14'):
         return "Plum"
 
     
@@ -166,12 +168,18 @@ def equalStringCube(cube):
 
  
  
-def checkCubes(robot: cozmo.robot.Robot):
+def checkCubes(manager: Manager, robot: cozmo.robot.Robot):
     lookaround = robot.start_behavior(
         cozmo.behavior.BehaviorTypes.LookAroundInPlace)
     cubes = robot.world.wait_until_observe_num_objects(num=1, object_type=cozmo.objects.LightCube, timeout=60)
     tmp = equalStringCube(cubes[0])
     lookaround.stop()
+    if(tmp == "White"):
+        robot.roll_cube(cubes[0]).wait_for_completed()
+        #envoi l'info de qui est la victime
+        manager.addVictim(tmp)
+    if(tmp == "Green"): #gerer ici en fonction de si on a trouvé le tueur
+        robot.start_behavior(cozmo.behavior.BehaviorTypes.KnockOverCubes)
     return tmp    
 
 
@@ -195,7 +203,9 @@ def cozmo_program(robot: cozmo.robot.Robot):
         }
     manager = Manager(3)
     
-    robot.initial_pose = Pose(0, 0, 0, angle_z=degrees(45))
+    
+    hall = Pose(0, 0, 0, angle_z=degrees(45))
+    robot.initial_pose = hall
     create_walls(robot)
     define_markers(robot)
     
@@ -207,38 +217,43 @@ def cozmo_program(robot: cozmo.robot.Robot):
     cuisine = Pose(700, 750, 30, angle_z=degrees(0))   
     robot.go_to_pose(cuisine).wait_for_completed()
     checkMarkers(robot)
-    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound) - 1] )
     manager.receiveData(tmp, "la cuisine")
     
     bureau = Pose(700, 1000, 30, angle_z=degrees(0))   
     robot.go_to_pose(bureau).wait_for_completed()
     checkMarkers(robot)
-    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound) - 1] )
     manager.receiveData(tmp, "le bureau")
     
     studio = Pose(200, 1000, 30, angle_z=degrees(180))   
     robot.go_to_pose(studio).wait_for_completed()  
     checkMarkers(robot)
-    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound) - 1])
     manager.receiveData(tmp, "le studio")
     
     bibliotheque = Pose(200, 750, 30, angle_z=degrees(180))   
     robot.go_to_pose(bibliotheque).wait_for_completed()  
     checkMarkers(robot)
-    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound) - 1])
     manager.receiveData(tmp, "la biliothèque")
     
     cave = Pose(200, 420, 30, angle_z=degrees(180))   
     robot.go_to_pose(cave).wait_for_completed()    
     checkMarkers(robot)
-    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound)])
+    tmp = equalStringMarker(robot.markersFound[len(robot.markersFound) - 1])
     manager.receiveData(tmp, "la cave")
     
-    robot.say_text("fini").wait_for_completed()
-    # for x in robot.markersFound:
-    #   print(x.object_type.name)
-    # time.sleep(10)
+    #définit qui est le tueur et les circonstances
+    killer = manager.solve() 
     
+    #retourne dans la pièce du début pour dire le résultat de ce qu'il a trouvé
+    robot.go_to_pose(hall).wait_for_completed()  
+    #dit le résultat qu'il a trouvé
+    robot.say_text(killer)  
+    
+    
+    robot.say_text("fini").wait_for_completed()
     
     
         
