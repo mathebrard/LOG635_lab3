@@ -113,24 +113,38 @@ class Manager:
 
     def receiveData(self, itemOfInterest, placeOfInterest):
         if itemOfInterest in self.itemsOfInterest:
-            print("amogus")
             answer = [itemOfInterest +" est dans "+placeOfInterest]
             grammar = 'grammars/arme_piece.fcfg'
             self.engine.add_clause(self.to_fol(answer,grammar))
         else:
-            print("sus")
             answer = [itemOfInterest + " était dans " + placeOfInterest + " à "+str(self.crimeTime)+"h"]
             grammar = 'grammars/personne_piece_heure.fcfg'
             self.engine.add_clause(self.to_fol(answer,grammar))
         return
+    
+    def addVictim(self, victim):
+        peopleArray = self.peopleOfInterest
+        self.engine.add_clause(self.to_fol([victim+" est mort"],'grammars/personne_morte.fcfg'))
+        for person in peopleArray:
+            if person != victim:
+                self.engine.add_clause(self.to_fol([person+" est vivant"],'grammars/personne_vivant.fcfg'))
 
+    def solveCrime(self):
+        killer = self.engine.get_suspect()
+        if(killer == False):
+            self.ask_question()
+            self.solveCrime()
+        return killer
 
 manager = Manager() 
 
 #for x in range(3):
 #    manager.receiveData("le couteau","la cave")
 
-manager.receiveData("Green","la cave")
+
+manager.addVictim("Green")
+
+manager.solveCrime()
 
         
 
