@@ -1,0 +1,18 @@
+%start S
+
+S[SEM=<MarqueCorps(?vp)>] -> VP[SEM=?vp]
+VP[SEM=?n] -> N[SEM=?n] V Det Nmarque P NCorps
+N[SEM=?np] -> Nprop[SEM=?np]
+V -> 'a'
+Det -> 'des' | 'une'
+P -> 'au'
+AD -> 'mort' | 'morte'
+Nmarque -> 'marques' | 'marque'
+NCorps -> 'corps'
+
+Nprop[SEM=<Mustard>] -> 'Mustard'
+Nprop[SEM=<Peacock>] -> 'Peacock'
+Nprop[SEM=<Scarlet>] -> 'Scarlet'
+Nprop[SEM=<Plum>] -> 'Plum'
+Nprop[SEM=<White>] -> 'White'
+Nprop[SEM=<Green>] -> 'Green'

@@ -57,6 +57,10 @@ class CrimeInference:
         # p. ex.: Mustard a des marques au cou
         self.body_mark_clause = 'MarqueCou({})'
 
+        # paramètre 1 : personne
+        # p. ex.: Mustard a des marques au cou
+        self.body_mark_clause = 'MarqueCorps({})'
+
         # paramètre 1 : piece; paramètre 2 : piece
         self.room_different_clause = 'PieceDifferente({},{})'
 
@@ -101,11 +105,14 @@ class CrimeInference:
     def inference_rules(self):
         # Determine la piece du crime
         self.clauses.append(expr('EstMort(x) & Personne_Piece(x, y) ==> PieceCrime(y)'))
+        self.clauses.append(expr('EstMort(x) & Personne_Piece_Heure(x, y, t) & HeureCrime(t) ==> PieceCrime(y)'))
 
         # Determiner l'arme du crime
         self.clauses.append(expr('PieceCrime(x) & Arme(y) & Arme_Piece(y, x) ==> ArmeCrime(y)'))
         self.clauses.append(expr("EstMort(x) & MarqueCou(x) ==> ArmeCrime(Corde)"))
-
+        self.clauses.append(expr("EstMort(x) & MarqueCorps(x) ==> ArmeCrime(Couteau)"))
+        self.clauses.append(expr('ArmePiece(Chandelier,r1) & PieceDifferente(Salon,r1) ==> ArmeCrime(Chandelier)'))
+        
         # Si la personne est morte alors elle est la victime et ce n'est pas un suicide
         self.clauses.append(expr('EstMort(x) ==> Victime(x)'))
 
@@ -123,6 +130,12 @@ class CrimeInference:
         self.clauses.append(expr(
             'EstVivant(p) & UneHeureApresCrime(h1) & Personne_Piece_Heure(p,r2,h1) & PieceCrime(r1)'
             ' & PieceDifferente(r1,r2) & ArmeCrime(a) & Arme_Piece(a,r2) ==> Suspect(p)'))
+
+        #Si la personne se trouvait dans la même pièce que la victime à l'heure du crime, elle est suspecte
+        self.clauses.append(expr(
+            'EstVivant(p) & HeureCrime(h) & Personne_Piece_Heure(p,r,h) & EstMort(x)'
+            ' & Personne_Piece_Heure(x,r,h) ==> Suspect(p)'))
+
 
     # Ajouter des clauses, c'est-à-dire des faits, à la base de connaissances
     def add_clause(self, clause_string):

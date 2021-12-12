@@ -9,13 +9,15 @@ import nltk
 
 class Manager:
 
-    def __init__(self):
+    def __init__(self,time):
         self.engine = CrimeInference()
         self.usedSentences = []
-        self.crimeTime = 2
+        self.crimeTime = time
         self.itemsOfInterest = ["le couteau","le revolver","la corde","le tuyau","la matraque","le chandelier"]
         self.peopleOfInterest = ["Mustard","Peacock", "Scarlet", "Plum", "White","Green"]
         self.rooms = ["le salon","la cuisine","le bureau","le studio","la bibliothèque","la cave"]
+        self.engine.add_clause('HeureCrime({})'.format(self.crimeTime))
+        self.engine.add_clause('UneHeureApresCrime({})'.format(self.crimeTime+1))
 
 
     # Cette fonction retourne le format d'une expression logique de premier ordre
@@ -111,13 +113,15 @@ class Manager:
                 print("s'il vous plait écrire seulement oui ou non")
                 self.writeYesNoAnswer(sentence,answer,structure)  
 
-    def receiveData(self, itemOfInterest, placeOfInterest):
+    def receiveData(self, itemOfInterest, placeOfInterest, time = None):
+        if time == None:
+            time = self.crimeTime
         if itemOfInterest in self.itemsOfInterest:
             answer = [itemOfInterest +" est dans "+placeOfInterest]
             grammar = 'grammars/arme_piece.fcfg'
             self.engine.add_clause(self.to_fol(answer,grammar))
         else:
-            answer = [itemOfInterest + " était dans " + placeOfInterest + " à "+str(self.crimeTime)+"h"]
+            answer = [itemOfInterest + " était dans " + placeOfInterest + " à "+str(time)+"h"]
             grammar = 'grammars/personne_piece_heure.fcfg'
             self.engine.add_clause(self.to_fol(answer,grammar))
         return
@@ -136,15 +140,27 @@ class Manager:
             self.solveCrime()
         return killer
 
-manager = Manager() 
+manager = Manager(2) 
 
 #for x in range(3):
 #    manager.receiveData("le couteau","la cave")
 
 
-manager.addVictim("Green")
+manager.addVictim("White")
 
-manager.solveCrime()
+#manager.engine.add_clause(manager.to_fol(['White a des marques au cou'], 'grammars/personne_marque_cou.fcfg'))
 
-        
+manager.receiveData("White","la bibliothèque")
+manager.receiveData("le revolver", "la bibliothèque")
+#manager.receiveData("le chandelier","la cuisine")
+manager.receiveData("Green","le salon")
+#manager.receiveData("la corde","le salon")
 
+
+print(manager.engine.get_victim())
+print(manager.engine.get_crime_room())
+print(manager.engine.get_suspect())
+print(manager.engine.get_innocent())
+print(manager.engine.get_crime_weapon())
+print(manager.engine.get_crime_hour())
+print(manager.engine.get_crime_hour_plus_one())
