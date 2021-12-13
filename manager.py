@@ -42,44 +42,56 @@ class Manager:
         
         if structure == 0:
             print("This is structure 0")
-            itemOfInterest = self.itemsOfInterest[randint(0,len(self.itemsOfInterest)-1)]
-            sentence = "Où est "+ itemOfInterest +"?"
-            question = 'grammars/arme_piece.fcfg'
-            self.itemsOfInterest.remove(itemOfInterest)
-            if self.checkSentence(sentence):
-                self.writeAnswer(sentence,question)
+            if len(self.itemsOfInterest) == 0:
+                self.ask_question()
+            else:    
+                itemOfInterest = self.itemsOfInterest[randint(0,len(self.itemsOfInterest)-1)]
+                sentence = "Où est "+ itemOfInterest +"?"
+                question = 'grammars/arme_piece.fcfg'
+                self.itemsOfInterest.remove(itemOfInterest)
+                if self.checkSentence(sentence):
+                    self.writeAnswer(sentence,question)
 
         elif structure == 1:
             print("This is structure 1")
-            itemOfInterest = self.peopleOfInterest[randint(0,len(self.peopleOfInterest)-1)]
-            sentence = "Où était "+ itemOfInterest +" à "+str(self.crimeTime)+"h?"
-            question = 'grammars/personne_piece_heure.fcfg'
-            self.peopleOfInterest.remove(itemOfInterest)
-            if self.checkSentence(sentence):
-                self.writeAnswer(sentence,question)
+            if len(self.peopleOfInterest) == 0:
+                self.ask_question()
+            else:    
+                itemOfInterest = self.peopleOfInterest[randint(0,len(self.peopleOfInterest)-1)]
+                sentence = "Où était "+ itemOfInterest +" à "+str(self.crimeTime)+"h?"
+                question = 'grammars/personne_piece_heure.fcfg'
+                self.peopleOfInterest.remove(itemOfInterest)
+                if self.checkSentence(sentence):
+                    self.writeAnswer(sentence,question)
 
         elif structure == 2:
             print("This is sctucture 2")
             structure = randrange(2)
             if structure == 0:
-                itemOfInterest = self.itemsOfInterest[randint(0,len(self.itemsOfInterest)-1)]
-                roomOfInterest = self.rooms[randint(0,len(self.rooms)-1)]
-                sentence = "Est-ce que "+itemOfInterest+" est dans "+roomOfInterest+"?"
-                answer = [itemOfInterest + " est dans " + roomOfInterest]
-                question = 'grammars/arme_piece.fcfg'
-                self.itemsOfInterest.remove(itemOfInterest)
-                if self.checkSentence(sentence):
-                    self.writeYesNoAnswer(sentence,answer,question)
+                if len(self.itemsOfInterest) == 0:
+                    self.ask_question()
+                else:
+                    itemOfInterest = self.itemsOfInterest[randint(0,len(self.itemsOfInterest)-1)]
+                    roomOfInterest = self.rooms[randint(0,len(self.rooms)-1)]
+                    sentence = "Est-ce que "+itemOfInterest+" est dans "+roomOfInterest+"?"
+                    answer = [itemOfInterest + " est dans " + roomOfInterest]
+                    question = 'grammars/arme_piece.fcfg'
+                    self.itemsOfInterest.remove(itemOfInterest)
+                    if self.checkSentence(sentence):
+                        self.writeYesNoAnswer(sentence,answer,question)
 
             elif structure == 1:
-                itemOfInterest = self.peopleOfInterest[randint(0,len(self.peopleOfInterest)-1)]
-                roomOfInterest = self.rooms[randint(0,len(self.rooms)-1)]
-                sentence = "Est-ce que "+itemOfInterest+" était dans "+roomOfInterest+" à "+str(self.crimeTime)+"h?"
-                answer = [itemOfInterest + " était dans " + roomOfInterest + " à "+str(self.crimeTime)+"h"]
-                question = 'grammars/personne_piece_heure.fcfg'
-                self.peopleOfInterest.remove(itemOfInterest)
-                if self.checkSentence(sentence):
-                    self.writeYesNoAnswer(sentence,answer,question)
+                if len(self.peopleOfInterest) == 0:
+                    self.ask_question()
+                else:
+                    itemOfInterest = self.peopleOfInterest[randint(0,len(self.peopleOfInterest)-1)]
+                    roomOfInterest = self.rooms[randint(0,len(self.rooms)-1)]
+                    sentence = "Est-ce que "+itemOfInterest+" était dans "+roomOfInterest+" à "+str(self.crimeTime)+"h?"
+                    answer = [itemOfInterest + " était dans " + roomOfInterest + " à "+str(self.crimeTime)+"h"]
+                    question = 'grammars/personne_piece_heure.fcfg'
+                    self.peopleOfInterest.remove(itemOfInterest)
+                    if self.checkSentence(sentence):
+                        self.writeYesNoAnswer(sentence,answer,question)
 
     def checkSentence(self,sentence):
         for item in self.usedSentences:
@@ -168,15 +180,13 @@ manager = Manager(2)
 #manager.receiveData("le chandelier","le salon")
 #manager.receiveData("Green","le salon")
 
-#for x in range(15):
-#    manager.ask_question()
+for x in range(15):
+    manager.ask_question()
 #manager.receiveData("la corde","le salon")
 
 manager.addVictim("White")
 manager.receiveData("White","le salon",2)
 manager.receiveData("White","le salon",3)
-manager.engine.add_clause(manager.to_fol(['White a des marques au cou'], 'grammars/personne_marque_cou.fcfg'))
-manager.receiveData("Green","le salon",2)
 
 
 crime = manager.solveCrime()
