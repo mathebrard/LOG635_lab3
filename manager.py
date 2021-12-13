@@ -150,7 +150,8 @@ class Manager:
             self.ask_question()
             killer = self.engine.get_suspect()
             weapon = self.engine.get_crime_weapon()
-        return killer
+        sentence = (str(killer) +" a tué "+str(self.engine.get_victim())+ " avec "+str(weapon) +" dans "+ str(self.engine.get_crime_room()))
+        return sentence
 
 manager = Manager(2) 
 
