@@ -119,6 +119,7 @@ class Manager:
         if itemOfInterest in self.itemsOfInterest:
             answer = [itemOfInterest +" est dans "+placeOfInterest]
             grammar = 'grammars/arme_piece.fcfg'
+            self.itemsOfInterest.remove(itemOfInterest)
             self.engine.add_clause(self.to_fol(answer,grammar))
         else:
             answer = [itemOfInterest + " était dans " + placeOfInterest + " à "+str(time)+"h"]
