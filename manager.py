@@ -42,15 +42,19 @@ class Manager:
         
         if structure == 0:
             print("This is structure 0")
-            sentence = "Où est "+ self.itemsOfInterest[randint(0,len(self.itemsOfInterest)-1)]+"?"
+            itemOfInterest = self.itemsOfInterest[randint(0,len(self.itemsOfInterest)-1)]
+            sentence = "Où est "+ itemOfInterest +"?"
             question = 'grammars/arme_piece.fcfg'
+            self.itemsOfInterest.remove(itemOfInterest)
             if self.checkSentence(sentence):
                 self.writeAnswer(sentence,question)
 
         elif structure == 1:
             print("This is structure 1")
-            sentence = "Où était "+ self.peopleOfInterest[randint(0,len(self.peopleOfInterest)-1)]+" à "+str(self.crimeTime)+"h?"
+            itemOfInterest = self.peopleOfInterest[randint(0,len(self.peopleOfInterest)-1)]
+            sentence = "Où était "+ itemOfInterest +" à "+str(self.crimeTime)+"h?"
             question = 'grammars/personne_piece_heure.fcfg'
+            self.peopleOfInterest.remove(itemOfInterest)
             if self.checkSentence(sentence):
                 self.writeAnswer(sentence,question)
 
@@ -63,6 +67,7 @@ class Manager:
                 sentence = "Est-ce que "+itemOfInterest+" est dans "+roomOfInterest+"?"
                 answer = [itemOfInterest + " est dans " + roomOfInterest]
                 question = 'grammars/arme_piece.fcfg'
+                self.itemsOfInterest.remove(itemOfInterest)
                 if self.checkSentence(sentence):
                     self.writeYesNoAnswer(sentence,answer,question)
 
@@ -72,6 +77,7 @@ class Manager:
                 sentence = "Est-ce que "+itemOfInterest+" était dans "+roomOfInterest+" à "+str(self.crimeTime)+"h?"
                 answer = [itemOfInterest + " était dans " + roomOfInterest + " à "+str(self.crimeTime)+"h"]
                 question = 'grammars/personne_piece_heure.fcfg'
+                self.peopleOfInterest.remove(itemOfInterest)
                 if self.checkSentence(sentence):
                     self.writeYesNoAnswer(sentence,answer,question)
 
@@ -115,11 +121,13 @@ class Manager:
 
     def receiveData(self, itemOfInterest, placeOfInterest, time = None):
         if time == None:
-            time = self.crimeTime
+            time = self.crimeTime+1
         if itemOfInterest in self.itemsOfInterest:
             answer = [itemOfInterest +" est dans "+placeOfInterest]
             grammar = 'grammars/arme_piece.fcfg'
             self.itemsOfInterest.remove(itemOfInterest)
+            for items in self.itemsOfInterest:
+                print(items)
             self.engine.add_clause(self.to_fol(answer,grammar))
         else:
             answer = [itemOfInterest + " était dans " + placeOfInterest + " à "+str(time)+"h"]
@@ -153,8 +161,11 @@ manager.addVictim("White")
 
 manager.receiveData("White","la bibliothèque")
 manager.receiveData("le revolver", "la bibliothèque")
-#manager.receiveData("le chandelier","la cuisine")
+manager.receiveData("le chandelier","le salon")
 manager.receiveData("Green","le salon")
+
+for x in range(5):
+    manager.ask_question()
 #manager.receiveData("la corde","le salon")
 
 
