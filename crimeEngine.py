@@ -106,6 +106,8 @@ class CrimeInference:
         # Determine la piece du crime
         self.clauses.append(expr('EstMort(x) & Personne_Piece(x, y) ==> PieceCrime(y)'))
         self.clauses.append(expr('EstMort(x) & Personne_Piece_Heure(x, y, t) & HeureCrime(t) ==> PieceCrime(y)'))
+        self.clauses.append(expr('EstMort(x) & Personne_Piece_Heure(x, y, t) & UneHeureApresCrime(t) ==> PieceCrime(y)'))
+
 
         # Determiner l'arme du crime
         self.clauses.append(expr('PieceCrime(x) & Arme(y) & Arme_Piece(y, x) ==> ArmeCrime(y)'))

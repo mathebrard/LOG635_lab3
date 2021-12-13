@@ -1,4 +1,4 @@
-from os import close
+from os import close, kill
 import codecs
 from crimeEngine import CrimeInference
 from aima.logic import *
@@ -144,30 +144,42 @@ class Manager:
 
     def solveCrime(self):
         killer = self.engine.get_suspect()
-        if(killer == False):
+        weapon = self.engine.get_crime_weapon()
+
+        while((str(killer)=="False") | (str(weapon)=="False")):
             self.ask_question()
-            self.solveCrime()
+            killer = self.engine.get_suspect()
+            weapon = self.engine.get_crime_weapon()
         return killer
 
 manager = Manager(2) 
+
 
 #for x in range(3):
 #    manager.receiveData("le couteau","la cave")
 
 
-manager.addVictim("White")
+#manager.addVictim("White")
 
-#manager.engine.add_clause(manager.to_fol(['White a des marques au cou'], 'grammars/personne_marque_cou.fcfg'))
 
-manager.receiveData("White","la bibliothèque")
-manager.receiveData("le revolver", "la bibliothèque")
-manager.receiveData("le chandelier","le salon")
-manager.receiveData("Green","le salon")
+#manager.receiveData("White","la bibliothèque")
+#manager.receiveData("le revolver", "la bibliothèque")
+#manager.receiveData("le chandelier","le salon")
+#manager.receiveData("Green","le salon")
 
-for x in range(5):
-    manager.ask_question()
+#for x in range(15):
+#    manager.ask_question()
 #manager.receiveData("la corde","le salon")
 
+manager.addVictim("White")
+manager.receiveData("White","le salon",2)
+manager.receiveData("White","le salon",3)
+manager.engine.add_clause(manager.to_fol(['White a des marques au cou'], 'grammars/personne_marque_cou.fcfg'))
+manager.receiveData("Green","le salon",2)
+
+
+crime = manager.solveCrime()
+print(crime)
 
 print(manager.engine.get_victim())
 print(manager.engine.get_crime_room())
