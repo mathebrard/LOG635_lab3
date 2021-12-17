@@ -30,12 +30,14 @@ class Manager:
                 res += str(semrep)
         return res
 
-    # Cette fonction transforme une phrase en fraçais dans une expression logique du premier ordre
+    # Cette fonction transforme une phrase en français dans une expression logique du premier ordre
     def to_fol(self,fact, grammar):
         sent = self.results_as_string(nltk.interpret_sents(fact, grammar))
         print(sent)
         return sent   
-
+    
+    # Fonction qui pose les questions à l'utilisateur et s'attends à une réponse qui suit une certaine structure.
+    # La question est créé de manière aléatoire et selon la question qui est posée, on impose une structure de réponse
     def ask_question(self):
         structure = randrange(3)
         itemOfInterest = ""
@@ -93,6 +95,8 @@ class Manager:
                     if self.checkSentence(sentence):
                         self.writeYesNoAnswer(sentence,answer,question)
 
+    # À chaque fois qu'une question est posée, on la rajoute dans un array de usedSentences
+    # Si la question est déjà dans le array, ça veut dire qu'elle a déjà été posée donc il faut poser une autre question
     def checkSentence(self,sentence):
         for item in self.usedSentences:
             if(sentence == item):
@@ -102,6 +106,8 @@ class Manager:
         self.usedSentences.append(sentence)
         return True
 
+    # Une fois que la question a été sélectionnée et checked pour voir si la question a déjà été posée
+    # On attends la réponde de l'utilisateur dans le fichier answer.txt que l'on lit par la suite.
     def writeAnswer(self,sentence,structure):
         print(sentence)
         input("Press any key to read answer.txt")
@@ -113,6 +119,8 @@ class Manager:
             answer = [lines[0]]
             self.engine.add_clause(self.to_fol(answer, structure))
     
+    # Pour les questions oui ou non, la structure de poser des questions change car non seulement on doit assumer la structure de la réponse
+    # Mais aussi regarder la réponse de la personne
     def writeYesNoAnswer(self,sentence, answer, structure):
         print(sentence)
         input("Press any key to read answer.txt")
@@ -131,6 +139,7 @@ class Manager:
                 print("s'il vous plait écrire seulement oui ou non")
                 self.writeYesNoAnswer(sentence,answer,structure)  
 
+    # ReceiveData est utilisé par Cozmo pour envoyer de l'information à la base de connaissance
     def receiveData(self, itemOfInterest, placeOfInterest, time = None):
         if time == None:
             time = self.crimeTime+1
@@ -147,6 +156,7 @@ class Manager:
             self.engine.add_clause(self.to_fol(answer,grammar))
         return
     
+    # AddVictim est utilisé au début de l'enquête pour déclarer la victime et mettre en place qui est la victime et qui est vivant
     def addVictim(self, victim):
         peopleArray = self.peopleOfInterest
         self.engine.add_clause(self.to_fol([victim+" est mort"],'grammars/personne_morte.fcfg'))
@@ -154,6 +164,8 @@ class Manager:
             if person != victim:
                 self.engine.add_clause(self.to_fol([person+" est vivant"],'grammars/personne_vivant.fcfg'))
 
+    # Une fois que le Cozmo a fait le tour de son environnement, s'il a encore besoin d'information, il va poser des questions
+    # Tant qu'il manque de l'information, il posera des question
     def solveCrime(self):
         killer = self.engine.get_suspect()
         weapon = self.engine.get_crime_weapon()
@@ -165,7 +177,7 @@ class Manager:
         sentence = (str(killer) +" a tué "+str(self.engine.get_victim())+ " avec "+str(weapon) +" dans "+ str(self.engine.get_crime_room()))
         return sentence
 
-manager = Manager(2) 
+#manager = Manager(2) 
 
 
 #for x in range(3):
@@ -180,22 +192,22 @@ manager = Manager(2)
 #manager.receiveData("le chandelier","le salon")
 #manager.receiveData("Green","le salon")
 
-for x in range(15):
-    manager.ask_question()
+#for x in range(15):
+#    manager.ask_question()
 #manager.receiveData("la corde","le salon")
 
-manager.addVictim("White")
-manager.receiveData("White","le salon",2)
-manager.receiveData("White","le salon",3)
+#manager.addVictim("White")
+#manager.receiveData("White","le salon",2)
+#manager.receiveData("White","le salon",3)
 
 
-crime = manager.solveCrime()
-print(crime)
+#crime = manager.solveCrime()
+#print(crime)
 
-print(manager.engine.get_victim())
-print(manager.engine.get_crime_room())
-print(manager.engine.get_suspect())
-print(manager.engine.get_innocent())
-print(manager.engine.get_crime_weapon())
-print(manager.engine.get_crime_hour())
-print(manager.engine.get_crime_hour_plus_one())
+#print(manager.engine.get_victim())
+#print(manager.engine.get_crime_room())
+#print(manager.engine.get_suspect())
+#print(manager.engine.get_innocent())
+#print(manager.engine.get_crime_weapon())
+#print(manager.engine.get_crime_hour())
+#print(manager.engine.get_crime_hour_plus_one())
